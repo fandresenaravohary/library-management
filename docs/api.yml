@@ -82,6 +82,67 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Book"
+  /Topic:
+    get:
+      tags:
+        - Topic
+      summary: Get all topic
+      parameters:
+        - name: topicName 
+          in: query
+          description: Filter return topic by given name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The list of filtered topics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'  
+    put:
+      tags:
+        - Topic 
+      summary: Create or update a list of Topics 
+      operationId: crupdateTopics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Topic'
+      responses:
+        200:
+          description: The list of created or updated Topics 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+    delete:
+      tags:
+        - Topic
+      summary: delete one topic by the given id 
+      parameters:
+        - name: topicId 
+          in: query
+          description: id of the topic to delete 
+          required: true 
+          schema:
+            type: string
+      responses:
+        200:
+          description: The topic that have been deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+
   /books/{bookId}/authors/{authorId}:
     put:
       summary: Modify the author of a book
@@ -129,7 +190,7 @@ paths:
           description: Filter returned authors by given name.
           schema:
             type: string
-            required: false
+          required: false
         - in: query
           name: page
           description: Page number for pagination
@@ -197,7 +258,15 @@ paths:
 components:
   schemas:
     Book:
-      type: object
+      allOf:
+        - $ref: "#/components/schemas/CrupdateBook"
+        - type: object
+      properties:
+        author:
+          $ref: "#/components/schemas/Author"
+        topic:
+          $ref: "#/components/schemas/Topic"
+    CrupdateBook:
       properties:
         id:
           type: string
@@ -208,21 +277,21 @@ components:
         pageNumbers:
           type: integer
         topic:
-          type: string
-          enum:
-            - ROMANCE
-            - COMEDY
-            - OTHER
+          $ref: "#/components/schemas/Topic"
         releaseDate:
           type: string
           format: date
-    CrupdateBook:
-      allOf:
-        - $ref: "#/components/schemas/Book"
-        - type: object
-          properties:
-            author:
-              type: null
+    Topic:
+      properties:
+        properties:
+        id:
+          type: string
+        topicName:
+          type: string
+          example: 
+            - ROMANCE
+            - COMEDY
+            - OTHER
     UpdateBookAuthor:
       type: object
       properties:
@@ -244,6 +313,56 @@ components:
       enum:
         - M
         - F
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
