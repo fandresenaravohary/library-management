@@ -255,6 +255,41 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Author"
+  /books/{bookId}/topics/{topicId}:
+    put:
+      summary: Modify the topic of a book
+      operationId: crupdateBookTopic
+      parameters:
+        - name: topicId
+          in: path
+          description: ID of the topic to update
+          schema:
+            type: string
+          required: true
+        - name: topicId
+          in: path
+          description: ID of the new topic for the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The topic of the book has been updated
+  /books/topics:
+    put:
+      summary: Update book topics
+      operationId: updateBookTopics
+      requestBody:
+        description: List of book updated in requestBody
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateBookTopic"
+      responses:
+        200:
+          description: Books and authors have been updated
 components:
   schemas:
     Book:
@@ -281,9 +316,15 @@ components:
         releaseDate:
           type: string
           format: date
+    UpdateBookTopic:
+      type: object
+      properties:
+        bookId:
+          type: string
+        TopicId:
+          type: string
     Topic:
       properties:
-        properties:
         id:
           type: string
         topicName:
