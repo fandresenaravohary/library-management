@@ -2,4 +2,4 @@
 API that manages library.
 
 The link of the petstore:
-https://petstore.swagger.io/?url=https://https://raw.githubusercontent.com/fandresenaravohary/library-management/main/docs/api.yml
+https://petstore.swagger.io/?url=https://raw.githubusercontent.com/fandresenaravohary/library-management/oas-td2-alt-STD22058/docs/api.yml
