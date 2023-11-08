@@ -354,7 +354,37 @@ components:
       enum:
         - M
         - F
-
+  parameters:
+    Page:
+      name: page
+      description: Page Number for pagination
+      in: query
+      schema:
+        type: integer
+        default: 1
+      required: false
+    PageSize:
+      name: pageSize
+      description: Page size for pagination
+      in: query
+      schema:
+        type: integer
+        default: 20
+      required: false
+    TopicId:
+      in: path
+      name: topicId
+      description: Id of topic
+      schema:
+        type: string
+      required: true
+    BookId:
+      in: path
+      name: bookId
+      description: Id of book
+      schema:
+        type: string
+      required: true
 
 
 
