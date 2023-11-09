@@ -173,7 +173,40 @@ components:
             application/json:
               schema:
                 $ref: "#/components/schemas/DefaultResponse"
+    ImportAuthor:
+      type: object
+      properties:
+        authorName:
+          type: string
+        sex:
+          $ref: "#/components/schemas/Sex"
 
+    ImportBook:
+      type: object
+      properties:
+        bookName:
+          type: string
+        author:
+          $ref: "#/components/schemas/ImportAuthor"
+        pageNumbers:
+          type: integer
+        topic:
+          $ref: "#/components/schemas/Topic"
+        releaseDate:
+          type: string
+          format: date
+        idAuthor:
+          type: string
+
+  responses:
+    ImportResponse:
+      description: The list of imported items
+      content:
+        application/json:
+          schema:
+            oneOf:
+              - $ref: "#/components/schemas/Book"
+              - $ref: "#/components/schemas/Author"
 paths:
   /books:
     get:
