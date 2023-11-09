@@ -105,6 +105,18 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Topic"
+    DefaultResponse:
+      type: object
+      properties:
+        status:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+        body:
+          type: object
 
 paths:
   /books:
@@ -132,6 +144,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Book"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
     put:
       tags:
         - Books
@@ -153,6 +171,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Book"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /Topic:
     get:
       tags:
@@ -173,7 +197,13 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Topic'  
+                  $ref: '#/components/schemas/Topic' 
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
     put:
       tags:
         - Topic 
@@ -195,6 +225,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Topic'
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
     delete:
       tags:
         - Topic
@@ -213,6 +249,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Topic'
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
 
   /books/{bookId}/authors/{authorId}:
     put:
@@ -234,6 +276,12 @@ paths:
       responses:
         200:
           description: The author of the book has been updated
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /books/authors:
     put:
       summary: Update book authors
@@ -249,6 +297,12 @@ paths:
       responses:
         200:
           description: Books and authors have been updated
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /authors:
     get:
       summary: Get all authors
@@ -272,6 +326,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Author"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
     put:
       summary: Create or update authors
       operationId: crupdateAuthors
@@ -293,6 +353,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Author"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /authors/{aId}:
     delete:
       summary: Delete an author
@@ -313,6 +379,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Author"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /books/{bookId}/topics/{topicId}:
     put:
       summary: Modify the topic of a book
@@ -333,6 +405,12 @@ paths:
       responses:
         200:
           description: The topic of the book has been updated
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /books/topics:
     put:
       summary: Update book topics
@@ -348,6 +426,12 @@ paths:
       responses:
         200:
           description: Books and authors have been updated
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
   /authorTopics:
     get:
       tags:
@@ -364,6 +448,12 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/AuthorTopics"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
 
 
 
