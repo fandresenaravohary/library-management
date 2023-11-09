@@ -117,6 +117,62 @@ components:
               type: string
         body:
           type: object
+    /books/import:
+      post:
+        summary: Import books from Excel or JSON
+        operationId: importBooks
+        requestBody:
+          description: List of books to import
+          content:
+            application/json:
+              description: Excel file containing book data
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CrupdateBook"
+      responses:
+        200:
+          description: The list of imported books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
+    /authors/import:
+      post:
+        summary: Import authors from Excel or JSON
+        operationId: importAuthors
+        requestBody:
+          description: List of authors to import
+          content:
+            application/json:
+              description: Excel file containing author data
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CrupdateAuthor"
+      responses:
+        200:
+          description: The list of imported authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+        default:
+          description: Default response for other status codes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DefaultResponse"
 
 paths:
   /books:
@@ -454,6 +510,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DefaultResponse"
+  
 
 
 
