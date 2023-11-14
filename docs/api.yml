@@ -2,221 +2,26 @@ openapi: 3.0.3
 info:
   title: Library API
   version: 1.1.0
-  description: STD22001
+  description: STD22058
 servers:
   - url: https://library.com
-tags:
-  - Books
-  - Authors
-paths:
-  /books:
-    get:
-      tags:
-        - Books
-      summary: Get all books
-      description: The returned books are ordered by updated datetime.
-      operationId: getBooks
-      parameters:
-        - in: query
-          name: bookName
-          description: Filter return books by given name
-          required: false
-          schema:
-            type: string
-        - in: query
-          name: releaseDateMin
-          description: |
-            If  `releaseDateMax` is not provided, `releaseDateMin` is ignored.
-            `releaseDateMin` can not be after `releaseDateMax`.
-          schema:
-            type: string
-            format: date
-          required: false
-        - in: query
-          name: releaseDateMax
-          description: |
-            If  `releaseDateMin` is not provided, `releaseDateMax` is ignored.
-            `releaseDateMax` can not be after `releaseDateMin`.
-          schema:
-            type: string
-            format: date
-          required: false
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/PageSize'
-      responses:
-        200:
-          $ref: '#/components/responses/BookList_200'
-        400:
-          $ref: '#/components/responses/400'
-        403:
-          $ref: '#/components/responses/403'
-    put:
-      tags:
-        - Books
-      summary: Create or update a list of books
-      operationId: crupdateBooks
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/CrupdateBook'
-      responses:
-        200:
-          $ref: '#/components/responses/BookList_200'
-        400:
-          $ref: '#/components/responses/400'
-  /books/{bookId}/authors/{authorId}:
-    put:
-      tags:
-        - Books
-      summary: Associate a single book to an author
-      operationId: associateBookAuthor
-      parameters:
-        - name: bookId
-          in: path
-          schema:
-            type: string
-          required: true
-        - name: authorId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        200:
-          description: The updated book
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
-  /books/authors:
-    put:
-      tags:
-        - Books
-      summary: Associate some books to some authors
-      operationId: associateBooksAuthors
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/UpdateBook'
-      responses:
-        200:
-          description: List of updated books
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Book'
-  /authors:
-    get:
-      summary: Get all authors
-      operationId: getAuthors
-      tags:
-        - Authors
-      parameters:
-        - name: authorName
-          in: query
-          description: |
-            Filter returned authors by given name. 
-            If not provided, then list is not filtered.
-          schema:
-            type: string
-          required: false
-      responses:
-        200:
-          description: The list of filtered authors
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Author'
-    put:
-      summary: Create or update authors
-      operationId: crupdateAuthors
-      tags:
-        - Authors
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Author'
-      responses:
-        200:
-          description: The list of created or updated authors
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Author'
-  /authors/page/{page}/size/{size}:
-    get:
-      tags:
-        - Authors
-      parameters:
-        - in: path
-          name: page
-          schema:
-            type: integer
-          required: true
-        - in: path
-          name: size
-          schema:
-            type: integer
-          required: true
-      responses:
-        200:
-          description: The author deleted
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Author'
-  /authors/{aId}:
-    delete:
-      summary: Delete an author
-      operationId: deleteAuthor
-      tags:
-        - Authors
-      parameters:
-        - name: aId
-          in: path
-          description: Author identifier to be deleted
-          schema:
-            type: string
-          required: true
-      responses:
-        200:
-          description: The author deleted
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Author'
 components:
   parameters:
-    Page:
-      in: query
+    QueryPagination:
       name: page
+      description: Page Number for pagination
+      in: query
       schema:
         type: integer
         default: 1
       required: false
-    PageSize:
-      in: query
+    PathPagination:
       name: pageSize
+      description: Page size for pagination
+      in: query
       schema:
         type: integer
-        default: 30
+        default: 20
       required: false
   responses:
     BookList_200:
@@ -237,7 +42,105 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ForbiddenBody'
+
   schemas:
+    Book:
+      allOf:
+        - $ref: "#/components/schemas/CrupdateBook"
+        - type: object
+      properties:
+        author:
+          $ref: "#/components/schemas/Author"
+        topic:
+          $ref: "#/components/schemas/Topic"
+    CrupdateBook:
+      properties:
+        id:
+          type: string
+        bookName:
+          type: string
+        author:
+          $ref: "#/components/schemas/Author"
+        pageNumbers:
+          type: integer
+        topic:
+          $ref: "#/components/schemas/Topic"
+        releaseDate:
+          type: string
+          format: date
+        availability:
+          type: string
+          enum:
+            - available
+            - borrowed
+    UpdateBookTopic:
+      type: object
+      properties:
+        bookId:
+          type: string
+        TopicId:
+          type: string
+    Topic:
+      properties:
+        id:
+          type: string
+        topicName:
+          type: string
+          example: 
+            - ROMANCE
+            - COMEDY
+            - OTHER
+    UpdateBookAuthor:
+      type: object
+      properties:
+        bookId:
+          type: string
+        authorId:
+          type: string
+    Author:
+      type: object
+      properties:
+        id:
+          type: string
+        authorName:
+          type: string
+        sex:
+          $ref: "#/components/schemas/Sex"
+    Sex:
+      type: string
+      enum:
+        - M
+        - F
+    CrupdateAuthor:
+      type: object
+      properties:
+        authorName:
+          type: string
+          example: Billy Williams
+        authorSex:
+          $ref: "#/components/schemas/Sex"
+    AuthorTopics:
+      type: object
+      allOf:
+        - allOf:
+            - $ref: "#/components/schemas/CrupdateAuthor"
+      properties:
+        topic:
+          type: array
+          items:
+            $ref: "#/components/schemas/Topic"
+    DefaultResponse:
+      type: object
+      properties:
+        status:
+          type: object
+          properties:
+            code:
+              type: integer
+            message:
+              type: string
+        body:
+          type: object
     ResponseStatus:
       type: object
       properties:
@@ -278,52 +181,484 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Book'
-    Book:
-      type: object
-      properties:
-        author:
-          $ref: '#/components/schemas/Author'
-      allOf:
-        - $ref: '#/components/schemas/CrupdateBook'
-    Author:
+    
+    Visitor:
       type: object
       properties:
         id:
           type: string
-        authorName:
+        name:
           type: string
-        sex:
-          $ref: '#/components/schemas/Sex'
-    Sex:
-      type: string
-      enum:
-        - M
-        - F
-    CrupdateBook:
-      type: object
-      properties:
-        id:
+        reference:
           type: string
-        bookName:
-          type: string
-        pageNumbers:
-          type: integer
-        topic:
-          type: string
-          enum:
-            - ROMANCE
-            - COMEDY
-            - OTHER
-        releaseDate:
-          type: string
-          format: date
-    UpdateBook:
+    VisitorActivity:
       type: object
       properties:
         bookId:
           type: string
-        authorId:
+        bookName:
           type: string
-      required:
-        - bookId
-        - authorId
+        action:
+          type: string
+          enum:
+            - borrow
+            - return
+        timestamp:
+          type: string
+          format: date-time
+  securitySchemes:
+    public:
+      type: apiKey
+      name: Authorization
+      in: header
+    admin:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: API key for administrator access
+
+    /books/import:
+      post:
+        summary: Import books from Excel or JSON
+        operationId: importBooks
+        requestBody:
+          description: List of books to import
+          content:
+            application/json:
+              description: Excel file containing book data
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CrupdateBook"
+      responses:
+        200:
+          description: The list of imported books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+    /authors/import:
+      post:
+        summary: Import authors from Excel or JSON
+        operationId: importAuthors
+        requestBody:
+          description: List of authors to import
+          content:
+            application/json:
+              description: Excel file containing author data
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CrupdateAuthor"
+      responses:
+        200:
+          description: The list of imported authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+    ImportAuthor:
+      type: object
+      properties:
+        authorName:
+          type: string
+        sex:
+          $ref: "#/components/schemas/Sex"
+
+    ImportBook:
+      type: object
+      properties:
+        bookName:
+          type: string
+        author:
+          $ref: "#/components/schemas/ImportAuthor"
+        pageNumbers:
+          type: integer
+        topic:
+          $ref: "#/components/schemas/Topic"
+        releaseDate:
+          type: string
+          format: date
+        idAuthor:
+          type: string
+
+paths:
+  /books:
+    get:
+      security:
+        - public: []    
+      tags:
+        - Books
+      summary: Get all books
+      description: The returned books are ordered by updated datetime.
+      operationId: getBooks
+      parameters:
+        - $ref: "#/components/parameters/QueryPagination"
+        - $ref: "#/components/parameters/PathPagination"
+        - in: query
+          name: bookName
+          description: Filter return books by given name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          $ref: '#/components/responses/BookList_200'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+    put:
+      tags:
+        - Books
+      summary: Create or update a list of books
+      operationId: crupdateBooks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/CrupdateBook"
+      responses:
+        200:
+          description: The list of created or updated books
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+  /Topic:
+    get:
+      tags:
+        - Topic
+      summary: Get all topic
+      parameters:
+        - name: topicName 
+          in: query
+          description: Filter return topic by given name
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: The list of filtered topics
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic' 
+    put:
+      tags:
+        - Topic 
+      summary: Create or update a list of Topics 
+      operationId: crupdateTopics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Topic'
+      responses:
+        200:
+          description: The list of created or updated Topics 
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topic'
+    delete:
+      tags:
+        - Topic
+      summary: delete one topic by the given id 
+      parameters:
+        - name: topicId 
+          in: query
+          description: id of the topic to delete 
+          required: true 
+          schema:
+            type: string
+      responses:
+        200:
+          description: The topic that have been deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topic'
+
+  /books/{bookId}/authors/{authorId}:
+    put:
+      summary: Modify the author of a book
+      operationId: updateBookAuthor
+      parameters:
+        - name: bookId
+          in: path
+          description: ID of the book to update
+          schema:
+            type: string
+          required: true
+        - name: authorId
+          in: path
+          description: ID of the new author for the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The author of the book has been updated
+  /books/authors:
+    put:
+      summary: Update book authors
+      operationId: updateBookAuthors
+      requestBody:
+        description: List of book and author pairs to update
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateBookAuthor"
+      responses:
+        200:
+          description: Books and authors have been updated
+  /authors:
+    get:
+      summary: Get all authors
+      operationId: getAuthors
+      tags:
+        - Authors
+      parameters:
+        - name: authorName
+          in: query
+          description: Filter returned authors by given name.
+          schema:
+            type: string
+          required: false
+        - $ref: "#/components/parameters/QueryPagination"
+      responses:
+        200:
+          description: The list of filtered authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+    put:
+      summary: Create or update authors
+      operationId: crupdateAuthors
+      tags:
+        - Authors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/Author"
+      responses:
+        200:
+          description: The list of created or updated authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Author"
+  /authors/{aId}:
+    delete:
+      summary: Delete an author
+      operationId: deleteAuthor
+      tags:
+        - Authors
+      parameters:
+        - name: aId
+          in: path
+          description: Author identifier to be deleted
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The author deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Author"
+  /books/{bookId}/topics/{topicId}:
+    put:
+      summary: Modify the topic of a book
+      operationId: crupdateBookTopic
+      parameters:
+        - name: topicId
+          in: path
+          description: ID of the topic to update
+          schema:
+            type: string
+          required: true
+        - name: topicId
+          in: path
+          description: ID of the new topic for the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The topic of the book has been updated
+  /books/topics:
+    put:
+      summary: Update book topics
+      operationId: updateBookTopics
+      requestBody:
+        description: List of book updated in requestBody
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/UpdateBookTopic"
+      responses:
+        200:
+          description: Books and authors have been updated
+  /authorTopics:
+    get:
+      tags:
+        - "Author"
+      summary: Get all authorTopics
+      description: The returned authors and list topics.
+      operationId: getAuthorTopics
+      responses:
+        200:
+          description: The list of authors with list topic
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AuthorTopics"
+  
+  /visitors:
+    get:
+      tags:
+        - "Visitors"
+      summary: Get all visitors
+      operationId: getVisitors
+      responses:
+        200:
+          description: The list of visitors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Visitor"
+    post:
+      tags:
+        - "Visitors"
+      summary: Create a new visitor
+      operationId: createVisitor
+      requestBody:
+        description: Information about the new visitor
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Visitor"
+      responses:
+        200:
+          description: The visitor has been created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Visitor"
+
+  /books/{bookId}/borrow:
+    post:
+      tags:
+        - "Books"
+      summary: Borrow a book
+      operationId: borrowBook
+      parameters:
+        - name: bookId
+          in: path
+          description: ID of the book to borrow
+          schema:
+            type: string
+          required: true
+        - name: visitorId
+          in: query
+          description: ID of the visitor borrowing the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The book has been borrowed
+
+  /books/{bookId}/return:
+    post:
+      tags:
+        - "Books"
+      summary: Return a borrowed book
+      operationId: returnBook
+      parameters:
+        - name: bookId
+          in: path
+          description: ID of the book to return
+          schema:
+            type: string
+          required: true
+        - name: visitorId
+          in: query
+          description: ID of the visitor returning the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The book has been returned
+
+  /visitors/{visitorId}/activities:
+    get:
+      tags:
+        - "Visitors"
+      summary: Get visitor activities
+      operationId: getVisitorActivities
+      parameters:
+        - name: visitorId
+          in: path
+          description: ID of the visitor to retrieve activities
+          schema:
+            type: string
+          required: true
+        - name: startDate
+          in: query
+          description: Start date for filtering activities
+          schema:
+            type: string
+            format: date
+          required: false
+        - name: endDate
+          in: query
+          description: End date for filtering activities
+          schema:
+            type: string
+            format: date
+          required: false
+      responses:
+        200:
+          description: The list of activities for the visitor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VisitorActivity"
+  
