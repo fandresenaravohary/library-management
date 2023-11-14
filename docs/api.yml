@@ -548,74 +548,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Visitor"
+
+  /books/{bookId}/borrow:
+    post:
+      tags:
+        - "Books"
+      summary: Borrow a book
+      operationId: borrowBook
+      parameters:
+        - name: bookId
+          in: path
+          description: ID of the book to borrow
+          schema:
+            type: string
+          required: true
+        - name: visitorId
+          in: query
+          description: ID of the visitor borrowing the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The book has been borrowed
+
+  /books/{bookId}/return:
+    post:
+      tags:
+        - "Books"
+      summary: Return a borrowed book
+      operationId: returnBook
+      parameters:
+        - name: bookId
+          in: path
+          description: ID of the book to return
+          schema:
+            type: string
+          required: true
+        - name: visitorId
+          in: query
+          description: ID of the visitor returning the book
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: The book has been returned
   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Pourquoi UpdateBookAuthor possède uniquement l’identifiant de CrupdateBook et l’identifiant de Author, mais sans les autres propriétés telles que bookName et authorName comme dans leur composant respectif ? 
-# Pour eviter de transmettre des données redondantes
-
-# Dans quel cas, UpdateBookAuthor devrait avoir les propriétés de CrupdateBook et de Author ?
-# Au cas où on fusionne les propriétés des livres ou auteurs en un seul
-
-#Pourquoi les paginations sont-elles nécessaires ?
-# Les utilisateurs préfèrent souvent consulter une petite quantité de données à la fois, au lieu de faire défiler une liste infinie. La pagination offre une expérience utilisateur plus conviviale.
-
-#Est-ce qu’on peut gérer la pagination à travers les entêtes de la requête ?
-#Oui, il est possible de gérer la pagination à travers les en-têtes de la requête, bien que ce ne soit pas la méthode la plus courante. Cependant, il est important de noter que l'utilisation des en-têtes pour la pagination n'est pas une pratique standard et peut prêter à confusion.
-
-#Est-ce qu’on doit gérer la pagination à travers les entêtes de la requête ?
-#L'utilisation de paramètres de requête pour la pagination est une pratique courante dans les API REST, et cela suit les conventions établies.
-
-#comment est ce que vous feriez si c'est plusieurs auteurs en meme temps
-#ajoutez des paramètres de requête à votre point d'entrée GET /authors
