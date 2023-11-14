@@ -1,2 +1,2 @@
 # library-management
-API that manages library.
+API that manages library. [PetsoreSwagger](https://petstore.swagger.io/?url=https://raw.githubusercontent.com/fandresenaravohary/library-management/oas-td4-STD2258-STD21010/docs/api.yml)
