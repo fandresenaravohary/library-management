@@ -68,6 +68,11 @@ components:
         releaseDate:
           type: string
           format: date
+        availability:
+          type: string
+          enum:
+            - available
+            - borrowed
     UpdateBookTopic:
       type: object
       properties:
