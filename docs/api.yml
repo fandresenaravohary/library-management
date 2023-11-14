@@ -598,6 +598,8 @@ paths:
           schema:
             type: string
           required: true
+      security:
+        - admin: []          
       responses:
         200:
           description: The book has been borrowed
@@ -621,6 +623,8 @@ paths:
           schema:
             type: string
           required: true
+      security:
+        - admin: []          
       responses:
         200:
           description: The book has been returned
