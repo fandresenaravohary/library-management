@@ -176,6 +176,19 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Book'
+    
+    Visitor:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        reference:
+          type: string
+
+
+
     /books/import:
       post:
         summary: Import books from Excel or JSON
@@ -501,6 +514,40 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/AuthorTopics"
+  
+  /visitors:
+    get:
+      tags:
+        - "Visitors"
+      summary: Get all visitors
+      operationId: getVisitors
+      responses:
+        200:
+          description: The list of visitors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Visitor"
+    post:
+      tags:
+        - "Visitors"
+      summary: Create a new visitor
+      operationId: createVisitor
+      requestBody:
+        description: Information about the new visitor
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Visitor"
+      responses:
+        200:
+          description: The visitor has been created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Visitor"
   
 
 
