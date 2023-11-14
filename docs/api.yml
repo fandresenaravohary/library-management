@@ -191,7 +191,21 @@ components:
           type: string
         reference:
           type: string
-
+    VisitorActivity:
+      type: object
+      properties:
+        bookId:
+          type: string
+        bookName:
+          type: string
+        action:
+          type: string
+          enum:
+            - borrow
+            - return
+        timestamp:
+          type: string
+          format: date-time
 
 
     /books/import:
@@ -599,4 +613,41 @@ paths:
       responses:
         200:
           description: The book has been returned
+
+  /visitors/{visitorId}/activities:
+    get:
+      tags:
+        - "Visitors"
+      summary: Get visitor activities
+      operationId: getVisitorActivities
+      parameters:
+        - name: visitorId
+          in: path
+          description: ID of the visitor to retrieve activities
+          schema:
+            type: string
+          required: true
+        - name: startDate
+          in: query
+          description: Start date for filtering activities
+          schema:
+            type: string
+            format: date
+          required: false
+        - name: endDate
+          in: query
+          description: End date for filtering activities
+          schema:
+            type: string
+            format: date
+          required: false
+      responses:
+        200:
+          description: The list of activities for the visitor
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VisitorActivity"
   
